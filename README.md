@@ -1,3 +1,5 @@
+![GraphX.AI Logo](./docs/repo-logo.png)
+
 # GraphX.AI
 
 Web app for generating and running read-only Gremlin queries against JanusGraph, then visualizing results as an interactive graph.
