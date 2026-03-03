@@ -234,7 +234,7 @@ export function ServerSelector({ servers, onConnect, onServerCreated, onServerUp
     <div className="panel" style={{ maxWidth: 900, margin: "2rem auto", padding: "1rem" }}>
       <div className="row" style={{ justifyContent: "space-between" }}>
         <div>
-          <h1 style={{ margin: 0 }}>JanusGraph Visualizer Agent</h1>
+          <h1 style={{ margin: 0 }}>GraphX.AI</h1>
           <p style={{ margin: "0.4rem 0", color: "var(--muted)" }}>Select a server or create a new connection.</p>
         </div>
 

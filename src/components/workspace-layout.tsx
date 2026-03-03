@@ -1,8 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { ServerConfig, Session } from "@/lib/types";
-import { PromptInput } from "@/components/prompt-input";
 import { SessionsPane } from "@/components/sessions-pane";
 import { VisualizationTabs } from "@/components/visualization-tabs";
 
@@ -37,28 +36,45 @@ export function WorkspaceLayout({
   isExecuting,
   isCreatingSession
 }: Props) {
+  const [isSessionsCollapsed, setIsSessionsCollapsed] = useState(false);
+
   const title = useMemo(() => {
     if (!activeSession) return "No session selected";
     return `${server.name} · ${activeSession.title}`;
   }, [activeSession, server.name]);
 
   return (
-    <div className="split">
-      <SessionsPane
-        sessions={sessions}
-        activeSessionId={activeSession?.id}
-        onCreateSession={onCreateSession}
-        onSelectSession={onSelectSession}
-        onRenameSession={onRenameSession}
-        onDeleteSession={onDeleteSession}
-        isCreatingSession={isCreatingSession}
-        isBusy={isExecuting || isCreatingSession}
-      />
+    <div className={`split ${isSessionsCollapsed ? "collapsed" : ""}`}>
+      {isSessionsCollapsed ? (
+        <div className="panel sessions-collapsed">
+          <button
+            className="button secondary"
+            onClick={() => setIsSessionsCollapsed(false)}
+            aria-label="Expand sessions pane"
+          >
+            <span className="sessions-expand-icon" aria-hidden>
+              ▸
+            </span>
+          </button>
+        </div>
+      ) : (
+        <SessionsPane
+          sessions={sessions}
+          activeSessionId={activeSession?.id}
+          onCreateSession={onCreateSession}
+          onSelectSession={onSelectSession}
+          onRenameSession={onRenameSession}
+          onDeleteSession={onDeleteSession}
+          onCollapse={() => setIsSessionsCollapsed(true)}
+          isCreatingSession={isCreatingSession}
+          isBusy={isExecuting || isCreatingSession}
+        />
+      )}
 
       <div className="right-pane">
         <div className="right-pane-top">
           <div className="row" style={{ justifyContent: "space-between", padding: "0 0.25rem" }}>
-            <h3 style={{ margin: 0 }}>{title}</h3>
+            <h3 style={{ margin: 0, color: "var(--accent)" }}>{title}</h3>
             <span style={{ color: "var(--muted)", fontSize: 13 }}>
               {server.protocol}://{server.host}:{server.port}
             </span>
@@ -67,16 +83,13 @@ export function WorkspaceLayout({
             messages={activeSession?.messages ?? []}
             onRerunQuery={onRerunQuery}
             onCopyPromptToInput={onPromptDraftChange}
+            onSubmitPrompt={onSubmitPrompt}
+            promptDraft={promptDraft}
+            onPromptDraftChange={onPromptDraftChange}
+            promptDisabled={!activeSession || isExecuting || isCreatingSession}
             isExecuting={isExecuting}
           />
         </div>
-
-        <PromptInput
-          onSubmit={onSubmitPrompt}
-          value={promptDraft}
-          onChange={onPromptDraftChange}
-          disabled={!activeSession || isExecuting || isCreatingSession}
-        />
       </div>
     </div>
   );

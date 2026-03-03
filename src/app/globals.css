@@ -2,9 +2,34 @@
   --bg: #f4f4ee;
   --fg: #1c1e1d;
   --panel: #fffef8;
+  --surface: #ffffff;
+  --surface-soft: #fffef8;
+  --surface-accent: #f0faf8;
   --accent: #216869;
   --muted: #5f6464;
   --border: #d6d2c4;
+  --user-bubble-border: #bfded6;
+  --tab-muted: #9aa1ab;
+  --tab-active-border: #3f6af6;
+  --overlay: rgba(255, 255, 255, 0.72);
+  --danger: #8a1f11;
+}
+
+[data-theme="dark"] {
+  --bg: #151819;
+  --fg: #f0f2ef;
+  --panel: #1e2324;
+  --surface: #252b2c;
+  --surface-soft: #222829;
+  --surface-accent: #1f3130;
+  --accent: #5ec0bb;
+  --muted: #aeb6b5;
+  --border: #374141;
+  --user-bubble-border: #2d4b49;
+  --tab-muted: #95a09f;
+  --tab-active-border: #5ec0bb;
+  --overlay: rgba(18, 22, 23, 0.72);
+  --danger: #ff8d80;
 }
 
 * {
@@ -21,6 +46,10 @@ body {
   color: var(--fg);
 }
 
+[data-theme="dark"] body {
+  background: radial-gradient(circle at 10% 10%, #242a2b 0%, #151819 60%, #111415 100%);
+}
+
 button,
 input,
 textarea {
@@ -30,6 +59,57 @@ textarea {
 .container {
   height: 100vh;
   padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.container.with-header {
+  padding-top: 4.5rem;
+}
+
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  padding: 0.5rem 1.25rem;
+  border: none;
+  background: var(--bg);
+  backdrop-filter: blur(8px);
+}
+
+.theme-select {
+  min-width: 90px;
+  width: auto;
+  height: 34px;
+}
+
+.app-header-inner {
+  min-height: 40px;
+}
+
+.app-title {
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+
+.app-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+}
+
+.app-nav-item {
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.app-main {
+  flex: 1;
+  min-height: 0;
 }
 
 .panel {
@@ -54,7 +134,29 @@ textarea {
   display: grid;
   grid-template-columns: 320px 1fr;
   gap: 1rem;
-  height: calc(100vh - 2.5rem);
+  height: 100%;
+}
+
+.split.collapsed {
+  grid-template-columns: 56px 1fr;
+}
+
+.sessions-collapsed {
+  padding: 0.5rem;
+  min-height: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.sessions-expand-icon {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.sessions-collapse-icon {
+  font-size: 12px;
+  line-height: 1;
 }
 
 .right-pane {
@@ -128,7 +230,7 @@ textarea {
 .graph-inspector {
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface);
   padding: 0.65rem;
   min-height: 0;
   overflow: auto;
@@ -138,7 +240,7 @@ textarea {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 0.45rem;
-  background: #fffef8;
+  background: var(--surface-soft);
 }
 
 .graph-prop-label {
@@ -155,7 +257,7 @@ textarea {
 .graph-loading-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.72);
+  background: var(--overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -174,7 +276,7 @@ textarea {
 .spinner {
   width: 14px;
   height: 14px;
-  border: 2px solid #d6d2c4;
+  border: 2px solid var(--border);
   border-top-color: var(--accent);
   border-radius: 999px;
   animation: spin 0.7s linear infinite;
@@ -218,12 +320,12 @@ textarea {
 }
 
 .reasoning-bubble.user {
-  background: #f0faf8;
-  border-color: #bfded6;
+  background: var(--surface-accent);
+  border-color: var(--user-bubble-border);
 }
 
 .reasoning-bubble.assistant {
-  background: #fff;
+  background: var(--surface);
 }
 
 .reasoning-title {
@@ -251,7 +353,7 @@ textarea {
 .card {
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface);
   padding: 0.75rem;
 }
 
@@ -280,7 +382,8 @@ textarea {
 .select {
   border: 1px solid var(--border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--surface);
+  color: var(--fg);
   padding: 0.5rem;
   width: 100%;
 }
@@ -294,7 +397,7 @@ textarea {
   width: 100%;
   text-align: left;
   border: 1px solid var(--border);
-  background: #fff;
+  background: var(--surface);
   border-radius: 10px;
   padding: 0.6rem;
   cursor: pointer;
@@ -302,7 +405,15 @@ textarea {
 
 .session-item.active {
   border-color: var(--accent);
-  background: #f0faf8;
+  background: var(--surface-accent);
+}
+
+.session-title {
+  color: var(--fg);
+}
+
+[data-theme="dark"] .session-title {
+  color: var(--accent);
 }
 
 .tab-trigger {
@@ -310,7 +421,7 @@ textarea {
   border-bottom: 3px solid transparent;
   border-radius: 0;
   background: transparent;
-  color: #9aa1ab;
+  color: var(--tab-muted);
   padding: 0.5rem 0.75rem 0.7rem;
   cursor: pointer;
   margin-bottom: -1px;
@@ -320,7 +431,7 @@ textarea {
 
 .tab-trigger[data-state="active"] {
   background: transparent;
-  border-bottom-color: #3f6af6;
+  border-bottom-color: var(--tab-active-border);
   color: var(--fg);
 }
 
@@ -360,7 +471,7 @@ textarea {
 }
 
 .error {
-  color: #8a1f11;
+  color: var(--danger);
 }
 
 @media (max-width: 960px) {

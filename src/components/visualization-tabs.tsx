@@ -4,15 +4,29 @@ import { useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import type { SessionMessage } from "@/lib/types";
 import { GraphView } from "@/components/graph-view";
+import { PromptInput } from "@/components/prompt-input";
 
 type Props = {
   messages: SessionMessage[];
   onRerunQuery: (query: string) => Promise<void>;
   onCopyPromptToInput: (prompt: string) => void;
+  onSubmitPrompt: (prompt: string) => Promise<void>;
+  promptDraft: string;
+  onPromptDraftChange: (value: string) => void;
+  promptDisabled: boolean;
   isExecuting: boolean;
 };
 
-export function VisualizationTabs({ messages, onRerunQuery, onCopyPromptToInput, isExecuting }: Props) {
+export function VisualizationTabs({
+  messages,
+  onRerunQuery,
+  onCopyPromptToInput,
+  onSubmitPrompt,
+  promptDraft,
+  onPromptDraftChange,
+  promptDisabled,
+  isExecuting
+}: Props) {
   const [runningQueryId, setRunningQueryId] = useState<string>("");
   const [rerunError, setRerunError] = useState<string>("");
   const [editorQuery, setEditorQuery] = useState<string>("");
@@ -73,8 +87,8 @@ export function VisualizationTabs({ messages, onRerunQuery, onCopyPromptToInput,
               {isExecuting ? <span className="spinner tab-spinner" /> : null}
             </span>
           </Tabs.Trigger>
-          <Tabs.Trigger value="reasoning" className="tab-trigger">
-            Reasoning
+          <Tabs.Trigger value="agent" className="tab-trigger">
+            Agent
           </Tabs.Trigger>
         </Tabs.List>
       </div>
@@ -166,47 +180,55 @@ export function VisualizationTabs({ messages, onRerunQuery, onCopyPromptToInput,
         </div>
       </Tabs.Content>
 
-      <Tabs.Content value="reasoning" className="tabs-content-fill">
-        <div className="stack scroll-fill">
-          {messages.map((message) => {
-            if (isRerunReasoning(message)) {
-              return null;
-            }
+      <Tabs.Content value="agent" className="tabs-content-fill">
+        <div className="stack" style={{ minHeight: 0, height: "100%" }}>
+          <div className="stack scroll-fill">
+            {messages.map((message) => {
+              if (isRerunReasoning(message)) {
+                return null;
+              }
 
-            if (message.role === "user" && message.prompt) {
-              const prompt = message.prompt;
-              return (
-                <div key={message.id} className="reasoning-row right">
-                  <div className="reasoning-bubble user">
-                    <div className="row" style={{ justifyContent: "space-between" }}>
-                      <div className="reasoning-title">Prompt</div>
-                      <button className="link-button" onClick={() => onCopyPromptToInput(prompt)}>
-                        Copy to input
-                      </button>
+              if (message.role === "user" && message.prompt) {
+                const prompt = message.prompt;
+                return (
+                  <div key={message.id} className="reasoning-row right">
+                    <div className="reasoning-bubble user">
+                      <div className="row" style={{ justifyContent: "space-between" }}>
+                        <div className="reasoning-title">Prompt</div>
+                        <button className="link-button" onClick={() => onCopyPromptToInput(prompt)}>
+                          Copy to input
+                        </button>
+                      </div>
+                      <div className="reasoning-time">{new Date(message.createdAt).toLocaleString()}</div>
+                      <div>{prompt}</div>
                     </div>
-                    <div className="reasoning-time">{new Date(message.createdAt).toLocaleString()}</div>
-                    <div>{prompt}</div>
                   </div>
-                </div>
-              );
-            }
+                );
+              }
 
-            if (message.role === "assistant" && (message.reasoning || message.error)) {
-              return (
-                <div key={message.id} className="reasoning-row left">
-                  <div className="reasoning-bubble assistant">
-                    <div className="reasoning-title">Reasoning</div>
-                    <div className="reasoning-time">{new Date(message.createdAt).toLocaleString()}</div>
-                    <div>{message.reasoning || "No reasoning"}</div>
-                    {message.error ? <p className="error" style={{ marginBottom: 0 }}>{message.error}</p> : null}
+              if (message.role === "assistant" && (message.reasoning || message.error)) {
+                return (
+                  <div key={message.id} className="reasoning-row left">
+                    <div className="reasoning-bubble assistant">
+                      <div className="reasoning-title">Reasoning</div>
+                      <div className="reasoning-time">{new Date(message.createdAt).toLocaleString()}</div>
+                      <div>{message.reasoning || "No reasoning"}</div>
+                      {message.error ? <p className="error" style={{ marginBottom: 0 }}>{message.error}</p> : null}
+                    </div>
                   </div>
-                </div>
-              );
-            }
+                );
+              }
 
-            return null;
-          })}
-          {messages.length === 0 ? <p style={{ color: "var(--muted)" }}>No reasoning yet.</p> : null}
+              return null;
+            })}
+            {messages.length === 0 ? <p style={{ color: "var(--muted)" }}>No messages yet.</p> : null}
+          </div>
+          <PromptInput
+            onSubmit={onSubmitPrompt}
+            value={promptDraft}
+            onChange={onPromptDraftChange}
+            disabled={promptDisabled}
+          />
         </div>
       </Tabs.Content>
     </Tabs.Root>

@@ -63,9 +63,10 @@ function buildLayout(graph: GraphPayload): { nodes: Node[]; edges: Edge[] } {
       sourcePosition: anchorPosition,
       targetPosition: oppositePosition(anchorPosition),
       style: {
-        border: "1px solid #d6d2c4",
+        border: "1px solid var(--border)",
         borderRadius: "50%",
-        background: "#fff",
+        background: "var(--surface)",
+        color: "var(--fg)",
         fontSize: 12,
         width: NODE_SIZE,
         height: NODE_SIZE,

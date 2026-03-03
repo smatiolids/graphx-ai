@@ -9,6 +9,7 @@ type Props = {
   onSelectSession: (id: string) => Promise<void>;
   onRenameSession: (id: string) => Promise<void>;
   onDeleteSession: (id: string) => Promise<void>;
+  onCollapse: () => void;
   isCreatingSession: boolean;
   isBusy: boolean;
 };
@@ -20,6 +21,7 @@ export function SessionsPane({
   onSelectSession,
   onRenameSession,
   onDeleteSession,
+  onCollapse,
   isCreatingSession,
   isBusy
 }: Props) {
@@ -29,12 +31,19 @@ export function SessionsPane({
     <div className="panel sessions-pane stack">
       <div className="row" style={{ justifyContent: "space-between" }}>
         <h3 style={{ margin: 0 }}>Sessions</h3>
-        <button className="button secondary" onClick={onCreateSession} disabled={actionsDisabled}>
-          <span className="tab-label-with-spinner">
-            {isCreatingSession ? <span className="spinner tab-spinner" /> : null}
-            {isCreatingSession ? "Creating..." : "New"}
-          </span>
-        </button>
+        <div className="row" style={{ gap: "0.5rem" }}>
+          <button className="button secondary" onClick={onCollapse} aria-label="Collapse sessions pane">
+            <span className="sessions-collapse-icon" aria-hidden>
+              ◂
+            </span>
+          </button>
+          <button className="button secondary" onClick={onCreateSession} disabled={actionsDisabled}>
+            <span className="tab-label-with-spinner">
+              {isCreatingSession ? <span className="spinner tab-spinner" /> : null}
+              {isCreatingSession ? "Creating..." : "New"}
+            </span>
+          </button>
+        </div>
       </div>
 
       <div className="stack list-scroll">
@@ -46,7 +55,9 @@ export function SessionsPane({
               disabled={actionsDisabled}
             >
               <div className="row" style={{ justifyContent: "space-between", alignItems: "flex-start" }}>
-                <div style={{ fontWeight: 600 }}>{session.title}</div>
+                <div className="session-title" style={{ fontWeight: 600 }}>
+                  {session.title}
+                </div>
                 <div className="row" style={{ gap: "0.5rem", alignItems: "center" }}>
                   <span
                     className="link-button"
