@@ -33,7 +33,33 @@ Inspect and run queries
 - Reachable JanusGraph Gremlin endpoint(s)
 - OpenAI API key
 
-## Quick Start (Local Repo)
+## Quick Start (NPX - Recommended)
+
+1. Create a `.env` file in the directory where you will run the app.
+
+```bash
+cat > .env <<'EOF'
+OPENAI_API_KEY=your_key_here
+OPENAI_MODEL=gpt-4.1-mini
+GREMLIN_DEFAULT_TRAVERSAL_SOURCE=g
+GREMLIN_REJECT_MUTATIONS=true
+EOF
+```
+
+2. Start GraphX.AI:
+```bash
+npx graphx-ai --port 3110
+```
+3. Open `http://localhost:3110`.
+
+Runtime files are created under your current directory (`./server` and `./log`) by default.
+Use `GRAPHX_AI_HOME` to isolate app data:
+
+```bash
+GRAPHX_AI_HOME=/tmp/graphx-ai-home npx graphx-ai
+```
+
+## Quick Start (Local Repo / Contributors)
 
 1. Install dependencies.
 ```bash
@@ -52,21 +78,6 @@ OPENAI_API_KEY=your_key_here
 pnpm dev
 ```
 5. Open `http://localhost:3000`.
-
-## Quick Start (NPX)
-
-1. Export your API key.
-```bash
-export OPENAI_API_KEY=your_key_here
-```
-2. Start GraphX.AI directly:
-```bash
-npx graphx-ai
-```
-3. Open `http://localhost:3000`.
-
-By default, runtime files are created in your current directory under `./server` and `./log`.
-Set `GRAPHX_AI_HOME` to store this data elsewhere.
 
 ## Run Modes
 
@@ -89,7 +100,7 @@ Set `GRAPHX_AI_HOME` to store this data elsewhere.
 
 - If query generation fails, confirm `OPENAI_API_KEY` is set.
 - If query execution fails, verify server URL/credentials and traversal source.
-- If a query is blocked, check `GREMLIN_REJECT_MUTATIONS` in `.env.local`.
+- If a query is blocked, check `GREMLIN_REJECT_MUTATIONS` in `.env` (NPX) or `.env.local` (local repo).
 
 ## Documentation
 

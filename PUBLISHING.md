@@ -67,11 +67,19 @@ Expected output: `dist/graphx-ai-X.Y.Z.tgz`
 
 ## 5. Test the Package Locally (NPX Flow)
 
+From the directory where you will run `npx`, create a local `.env` file:
+
+```bash
+cat > .env <<'EOF'
+OPENAI_API_KEY=your_key_here
+EOF
+```
+
 Run the packed version exactly how end users will run it:
 
 ```bash
-npm_config_cache=/tmp/npm-cache OPENAI_API_KEY=your_key_here npx -y ./dist/graphx-ai-X.Y.Z.tgz help
-npm_config_cache=/tmp/npm-cache OPENAI_API_KEY=your_key_here npx -y ./dist/graphx-ai-X.Y.Z.tgz --port 3100
+npm_config_cache=/tmp/npm-cache npx -y ./dist/graphx-ai-X.Y.Z.tgz help
+npm_config_cache=/tmp/npm-cache npx -y ./dist/graphx-ai-X.Y.Z.tgz --port 3100
 ```
 
 Then open `http://localhost:3100` and validate:
@@ -91,7 +99,8 @@ Optional: isolate runtime files in a temp folder:
 
 ```bash
 mkdir -p /tmp/graphx-ai-test-home
-GRAPHX_AI_HOME=/tmp/graphx-ai-test-home npm_config_cache=/tmp/npm-cache OPENAI_API_KEY=your_key_here npx -y ./dist/graphx-ai-X.Y.Z.tgz --port 3100
+cp .env /tmp/graphx-ai-test-home/.env
+GRAPHX_AI_HOME=/tmp/graphx-ai-test-home npm_config_cache=/tmp/npm-cache npx -y ./dist/graphx-ai-X.Y.Z.tgz --port 3100
 ```
 
 ## Generate Dist Packages (Quick Commands)
